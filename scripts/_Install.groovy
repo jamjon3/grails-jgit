@@ -8,3 +8,13 @@
 //
 //    ant.mkdir(dir:"${basedir}/grails-app/jobs")
 //
+
+// ensure that there are 'git' directory under application 'web-app'
+ant.mkdir(dir:"${basedir}/web-app/git")
+def gitignoreFile = "${basedir}/.gitignore"
+if(!(gitignoreFile as File).exists()?true:((gitignoreFile as File).readLines().findAll { it.contains("web-app/git") }.size() < 1)) {
+    (gitignoreFile as File).withWriterAppend {
+        it.writeLine "/web-app/git/"
+    }
+    ant.echo "Added /web-app/git/ to ${gitignoreFile}"
+}
