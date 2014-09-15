@@ -1,16 +1,13 @@
 class JgitGrailsPlugin {
-    // the plugin version
     def version = "0.1"
-    // the version or versions of Grails the plugin is designed for
     def grailsVersion = "2.2 > *"
-    // resources that are excluded from plugin packaging
+
     def pluginExcludes = [
         "grails-app/views/error.gsp"
     ]
 
-    // TODO Fill in these fields
-    def title = "Jgit Plugin" // Headline display name of the plugin
-    def author = "Your name"
+    def title = "Jgit Plugin" 
+    def author = "James Jones"
     def authorEmail = "james@gmail.com"
     def description = '''\
 Creates a wrapper around the JGit library.
@@ -31,10 +28,10 @@ Creates a wrapper around the JGit library.
 //    def developers = [ [ name: "Joe Bloggs", email: "joe@bloggs.net" ]]
 
     // Location of the plugin's issue tracker.
-//    def issueManagement = [ system: "JIRA", url: "http://jira.grails.org/browse/GPMYPLUGIN" ]
+    def issueManagement = [ system: "github", url: "https://github.com/jamjon3/grails-jgit/issues" ]
 
     // Online location of the plugin's browseable source code.
-//    def scm = [ url: "http://svn.codehaus.org/grails-plugins/" ]
+    def scm = [ url: "https://github.com/jamjon3/grails-jgit/" ]
 
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before
