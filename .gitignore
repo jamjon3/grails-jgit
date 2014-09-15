@@ -1,0 +1,5 @@
+*.log
+target/*
+plugin.xml
+target/*
+docs/*
