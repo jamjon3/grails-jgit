@@ -65,15 +65,11 @@ Creates a wrapper around the JGit library.
         if(localGitFolder.exists()) {
             localGitFolder.deleteDir()
         }
-        println localGitFolder.absolutePath
         FileRepositoryBuilder builder = new FileRepositoryBuilder()
         Repository repository = builder.setGitDir(localGitFolder)
             .readEnvironment().findGitDir().setup().build()
-        def config = application.config.grails
-        println config
-        def jgitConfig = Holders.config?.jgit
+        def jgitConfig = application.config?.jgit
         if(jgitConfig.userInfoHandler) {
-            println jgitConfig.userInfoHandler
             // Load the default or custom specified user info handler
             def userInfoHandler = this.getClass().classLoader.loadClass(jgitConfig.userInfoHandler).newInstance()
             // Setup the Clone
@@ -88,14 +84,10 @@ Creates a wrapper around the JGit library.
 
             try {
                 git = clone.call()
-                println localGitFolder.name
             } catch (GitAPIException e) {
                 e.printStackTrace();
             }
         } else {
-            println jgitConfig
-            println Holders.config
-            println application.config
             println "No valid config found!"
         }
         
