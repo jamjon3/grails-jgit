@@ -68,23 +68,26 @@ Creates a wrapper around the JGit library.
         FileRepositoryBuilder builder = new FileRepositoryBuilder()
         Repository repository = builder.setGitDir(localGitFolder)
             .readEnvironment().findGitDir().setup().build()
-        def jgitConfig = Holders.config.jgit
-        // Load the default or custom specified user info handler
-        def userInfoHandler = this.getClass().classLoader.loadClass(jgitConfig.userInfoHandler).newInstance()
-        // Setup the Clone
-        CloneCommand clone = Git.cloneRepository()
-        // Setup the branch on the clone
-        clone.setBare(false).setBranch(jgitConfig.branch)
-        // Specify the remote uri. Ex: git@192.168.2.43:test.git OR https://github.com/someuser/SomeProject.git
-        clone.setDirectory(localRepoFolder).setURI(jgitConfig.gitRemoteURL)
-        // Specifiy username/password (only supported method for now)
-        credentialsProvider = new UsernamePasswordCredentialsProvider(jgitConfig.gitRemotelogin, jgitConfig.gitRemotePassword)
-        clone.setCredentialsProvider(credentialsProvider)
-        
-        try {
-            git = clone.call();
-        } catch (GitAPIException e) {
-            e.printStackTrace();
+        def jgitConfig = Holders.config?.jgit
+        if(jgitConfig.userInfoHandler) {
+            println jgitConfig.userInfoHandler
+            // Load the default or custom specified user info handler
+            def userInfoHandler = this.getClass().classLoader.loadClass(jgitConfig.userInfoHandler).newInstance()
+            // Setup the Clone
+            CloneCommand clone = Git.cloneRepository()
+            // Setup the branch on the clone
+            clone.setBare(false).setBranch(jgitConfig.branch)
+            // Specify the remote uri. Ex: git@192.168.2.43:test.git OR https://github.com/someuser/SomeProject.git
+            clone.setDirectory(localRepoFolder).setURI(jgitConfig.gitRemoteURL)
+            // Specifiy username/password (only supported method for now)
+            credentialsProvider = new UsernamePasswordCredentialsProvider(jgitConfig.gitRemotelogin, jgitConfig.gitRemotePassword)
+            clone.setCredentialsProvider(credentialsProvider)
+
+            try {
+                git = clone.call();
+            } catch (GitAPIException e) {
+                e.printStackTrace();
+            }
         }
         
     }
