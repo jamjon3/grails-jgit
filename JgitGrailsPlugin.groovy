@@ -66,7 +66,7 @@ Creates a wrapper around the JGit library.
             localRepoFolder.deleteDir()
         }
         FileRepositoryBuilder builder = new FileRepositoryBuilder()
-        Repository repository = builder.setGitDir(localRepoFolder)
+        Repository repository = builder.setGitDir(localGitFolder)
             .readEnvironment().findGitDir().setup().build()
         def jgitConfig = Holders.config.jgit
         // Load the default or custom specified user info handler
