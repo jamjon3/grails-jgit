@@ -6,4 +6,4 @@ jgit.branch = 'master'
 jgit.gitRemoteURL = 'https://github.com/someuser/SomeApp.git'
 jgit.gitRemotelogin = 'jdoe'
 jgit.gitRemotePassword = 'mygitpassword'
-jgit.injectInto: ["Controller", "Service","Domain"]
+jgit.injectInto = ["Controller", "Service","Domain"]
