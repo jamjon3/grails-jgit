@@ -50,7 +50,7 @@ Creates a wrapper around the JGit library.
 
     def doWithSpring = {
         // TODO Implement runtime spring config (optional)
-        
+        // mergeConfig(application)
     }
 
     def doWithDynamicMethods = { ctx -> processArtifacts(application) }
@@ -61,13 +61,16 @@ Creates a wrapper around the JGit library.
     
     def doWithApplicationContext = { applicationContext ->
         // TODO Implement post initialization spring config (optional)
-        def localGitFolder = applicationContext.getResource("web-app/git").file
+        def localGitFolder = applicationContext.getResource("git").file
         if(localGitFolder.exists()) {
-            localRepoFolder.deleteDir()
+            localGitFolder.deleteDir()
         }
+        println localGitFolder.absolutePath
         FileRepositoryBuilder builder = new FileRepositoryBuilder()
         Repository repository = builder.setGitDir(localGitFolder)
             .readEnvironment().findGitDir().setup().build()
+        def config = application.config.grails
+        println config
         def jgitConfig = Holders.config?.jgit
         if(jgitConfig.userInfoHandler) {
             println jgitConfig.userInfoHandler
@@ -78,16 +81,22 @@ Creates a wrapper around the JGit library.
             // Setup the branch on the clone
             clone.setBare(false).setBranch(jgitConfig.branch)
             // Specify the remote uri. Ex: git@192.168.2.43:test.git OR https://github.com/someuser/SomeProject.git
-            clone.setDirectory(localRepoFolder).setURI(jgitConfig.gitRemoteURL)
+            clone.setDirectory(localGitFolder).setURI(jgitConfig.gitRemoteURL)
             // Specifiy username/password (only supported method for now)
             credentialsProvider = new UsernamePasswordCredentialsProvider(jgitConfig.gitRemotelogin, jgitConfig.gitRemotePassword)
             clone.setCredentialsProvider(credentialsProvider)
 
             try {
-                git = clone.call();
+                git = clone.call()
+                println localGitFolder.name
             } catch (GitAPIException e) {
                 e.printStackTrace();
             }
+        } else {
+            println jgitConfig
+            println Holders.config
+            println application.config
+            println "No valid config found!"
         }
         
     }
@@ -128,5 +137,5 @@ Creates a wrapper around the JGit library.
             closure.resolveStrategy = Closure.DELEGATE_FIRST
             closure()
         }
-    }
+    }    
 }
