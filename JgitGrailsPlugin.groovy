@@ -115,7 +115,7 @@ Creates a wrapper around the JGit library.
         pushcm.setCredentialsProvider(credentialsProvider)
         pushcm.setRemote(Holders.config.jgit.gitRemoteURL)
         PullCommand pullcm = git.pull()
-        pullcm.setCredentialsProvider(user)
+        pullcm.setCredentialsProvider(credentialsProvider)
         // pull.setRemote(Holders.config.jgit.gitRemoteURL)
         RmCommand rmcm = git.rm()        
         SubmoduleSyncCommand synccm = git.submoduleSync()
