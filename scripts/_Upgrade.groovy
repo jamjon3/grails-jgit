@@ -18,4 +18,3 @@ if(!(gitignoreFile as File).exists()?true:((gitignoreFile as File).readLines().f
     }
     ant.echo "Added /web-app/git/ to ${gitignoreFile}"
 }
-ant.copy(file: "${pluginBasedir}/src/resources/JGitConfig.groovy", todir: "${basedir}/grails-app/conf")
