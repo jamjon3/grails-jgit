@@ -4,7 +4,7 @@ import grails.util.Holders
 import org.grails.plugins.jgit.JGit
 
 class JgitGrailsPlugin {
-    def version = "0.1"
+    def version = "1.0.0"
     def grailsVersion = "2.2 > *"
 
     def pluginExcludes = [
