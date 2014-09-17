@@ -1,21 +1,7 @@
 import org.codehaus.groovy.grails.commons.ApplicationHolder
-import org.eclipse.jgit.api.Git
-import org.eclipse.jgit.api.InitCommand
-import org.eclipse.jgit.api.CloneCommand
-import org.eclipse.jgit.api.FetchCommand
-import org.eclipse.jgit.api.LsRemoteCommand
-import org.eclipse.jgit.api.PullCommand
-import org.eclipse.jgit.api.PushCommand
-import org.eclipse.jgit.api.SubmoduleSyncCommand
-import org.eclipse.jgit.api.RmCommand
-import org.eclipse.jgit.api.CheckoutCommand
-import org.eclipse.jgit.api.StatusCommand
-import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder
-import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider
-import org.eclipse.jgit.api.errors.GitAPIException
 import grails.util.Holders
+import org.grails.plugins.jgit.JGit
 
 class JgitGrailsPlugin {
     def version = "0.1"
@@ -49,48 +35,23 @@ Creates a wrapper around the JGit library.
     }
 
     def doWithSpring = {
-        // TODO Implement runtime spring config (optional)
-        // mergeConfig(application)
+        def jgitConfig = application.config?.jgit
+        if(jgitConfig.userInfoHandler) {
+            credentialsProvider(org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider,jgitConfig.gitRemotelogin, jgitConfig.gitRemotePassword)
+            jGit(org.grails.plugins.jgit.JGit) {
+                rootFolder = application.parentContext.getResource("git").file
+                remoteURL  = jgitConfig.gitRemoteURL
+                branch = jgitConfig.branch
+                userInfo = this.getClass().classLoader.loadClass(jgitConfig.userInfoHandler).newInstance()
+                credentialsProvider = ref('credentialsProvider')
+            }
+        }
     }
 
     def doWithDynamicMethods = { ctx -> processArtifacts(application) }
-    
-    // Defined within doWithApplicationContext 
-    private Git git
-    private def credentialsProvider
-    
+        
     def doWithApplicationContext = { applicationContext ->
         // TODO Implement post initialization spring config (optional)
-        def localGitFolder = applicationContext.getResource("git").file
-        if(localGitFolder.exists()) {
-            localGitFolder.deleteDir()
-        }
-        FileRepositoryBuilder builder = new FileRepositoryBuilder()
-        Repository repository = builder.setGitDir(localGitFolder)
-            .readEnvironment().findGitDir().setup().build()
-        def jgitConfig = application.config?.jgit
-        if(jgitConfig.userInfoHandler) {
-            // Load the default or custom specified user info handler
-            def userInfoHandler = this.getClass().classLoader.loadClass(jgitConfig.userInfoHandler).newInstance()
-            // Setup the Clone
-            CloneCommand clone = Git.cloneRepository()
-            // Setup the branch on the clone
-            clone.setBare(false).setBranch(jgitConfig.branch)
-            // Specify the remote uri. Ex: git@192.168.2.43:test.git OR https://github.com/someuser/SomeProject.git
-            clone.setDirectory(localGitFolder).setURI(jgitConfig.gitRemoteURL)
-            // Specifiy username/password (only supported method for now)
-            credentialsProvider = new UsernamePasswordCredentialsProvider(jgitConfig.gitRemotelogin, jgitConfig.gitRemotePassword)
-            clone.setCredentialsProvider(credentialsProvider)
-
-            try {
-                git = clone.call()
-            } catch (GitAPIException e) {
-                e.printStackTrace();
-            }
-        } else {
-            println "No valid config found!"
-        }
-        
     }
 
     
@@ -104,30 +65,24 @@ Creates a wrapper around the JGit library.
     
     private void processArtifacts(application) {
         def config = application.config
+        def jgit = application.mainContext.getBean('jGit')
         def types = config.jgit?.injectInto ?: ["Controller", "Service", "Domain"]
-        types.each { type ->
-            application.getArtefacts(type).each { klass -> addDynamicMethods(klass, application) }
+        if(jgit) {
+            types.each { type ->
+                application.getArtefacts(type).each { klass -> addDynamicMethods(klass, jgit) }
+            }
         }
     }
     
-    private void addDynamicMethods(klass, application) {
-        klass.metaClass.withJGit = withJGit.curry(git,credentialsProvider)
+    private void addDynamicMethods(klass, jgit) {
+        klass.metaClass.withJGit = withJGit.curry(jgit)
     }
     
-    private withJGit = { Git git, def credentialsProvider, Closure closure ->
-        PushCommand pushcm = git.push()
-        pushcm.setCredentialsProvider(credentialsProvider)
-        pushcm.setRemote(Holders.config.jgit.gitRemoteURL)
-        PullCommand pullcm = git.pull()
-        pullcm.setCredentialsProvider(credentialsProvider)
-        // pull.setRemote(Holders.config.jgit.gitRemoteURL)
-        RmCommand rmcm = git.rm()        
-        SubmoduleSyncCommand synccm = git.submoduleSync()
-        
+    private withJGit = { def jgit, Closure closure ->
         if (closure) {
-            closure.delegate = git
+            closure.delegate = jgit
             closure.resolveStrategy = Closure.DELEGATE_FIRST
-            closure()
+            closure(jgit.rootFolder)
         }
     }    
 }
