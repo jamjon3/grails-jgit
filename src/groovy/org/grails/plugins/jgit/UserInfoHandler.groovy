@@ -6,6 +6,7 @@
 
 package org.grails.plugins.jgit
 
+import grails.util.Holders
 /**
  *
  * @author james
@@ -17,7 +18,8 @@ class UserInfoHandler {
      * @param    username     The username used to resolve an email address
      * @return                The email address associated or fallback email address if not found
      */
-    def resolveEmail(username) {
+    def resolveEmail() {
+        def username = resolveUsername()
         if(Holders.config.jqit.fallbackMap[username]) {
             return Holders.config.jqit.fallbackMap[username]
         } else {
