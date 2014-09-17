@@ -4,7 +4,7 @@ import grails.util.Holders
 import org.grails.plugins.jgit.JGit
 
 class JgitGrailsPlugin {
-    def version = "0.1"
+    def version = "1.0.0"
     def grailsVersion = "2.2 > *"
 
     def pluginExcludes = [
@@ -29,7 +29,7 @@ Creates a wrapper around the JGit library.
 
     def issueManagement = [ system: "github", url: "https://github.com/jamjon3/grails-jgit/issues" ]
     def scm = [ url: "https://github.com/jamjon3/grails-jgit/" ]
-
+    
     def doWithWebDescriptor = { xml ->
         // TODO Implement additions to web.xml (optional), this event occurs before
     }
@@ -65,12 +65,14 @@ Creates a wrapper around the JGit library.
     
     private void processArtifacts(application) {
         def config = application.config
-        def jgit = application.mainContext.getBean('jGit')
-        def types = config.jgit?.injectInto ?: ["Controller", "Service", "Domain"]
-        if(jgit) {
-            types.each { type ->
-                application.getArtefacts(type).each { klass -> addDynamicMethods(klass, jgit) }
-            }
+        if(application.mainContext.beanDefinitionNames.find { it == 'jGit' }) {
+            def jgit = application.mainContext.getBean('jGit')
+            def types = config.jgit?.injectInto ?: ["Controller", "Service", "Domain"]
+            if(jgit) {
+                types.each { type ->
+                    application.getArtefacts(type).each { klass -> addDynamicMethods(klass, jgit) }
+                }
+            }            
         }
     }
     
