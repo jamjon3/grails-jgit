@@ -1,17 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.grails.plugins.jgit
 
-import org.eclipse.jgit.api.Git
-import org.eclipse.jgit.api.InitCommand
-import org.eclipse.jgit.api.ListBranchCommand
-import org.eclipse.jgit.api.ListNotesCommand
-import org.eclipse.jgit.api.ListTagCommand
-import org.eclipse.jgit.api.LogCommand
+import org.eclipse.jgit.api.AddCommand
+import org.eclipse.jgit.api.AddNoteCommand
+import org.eclipse.jgit.api.ApplyCommand
+import org.eclipse.jgit.api.ArchiveCommand
+import org.eclipse.jgit.api.BlameCommand
+import org.eclipse.jgit.api.CheckoutCommand
+import org.eclipse.jgit.api.CherryPickCommand
+import org.eclipse.jgit.api.CleanCommand
 import org.eclipse.jgit.api.CloneCommand
 import org.eclipse.jgit.api.CommitCommand
 import org.eclipse.jgit.api.CreateBranchCommand
@@ -21,6 +17,11 @@ import org.eclipse.jgit.api.DescribeCommand
 import org.eclipse.jgit.api.DiffCommand
 import org.eclipse.jgit.api.FetchCommand
 import org.eclipse.jgit.api.GarbageCollectCommand
+import org.eclipse.jgit.api.Git
+import org.eclipse.jgit.api.ListBranchCommand
+import org.eclipse.jgit.api.ListNotesCommand
+import org.eclipse.jgit.api.ListTagCommand
+import org.eclipse.jgit.api.LogCommand
 import org.eclipse.jgit.api.LsRemoteCommand
 import org.eclipse.jgit.api.MergeCommand
 import org.eclipse.jgit.api.NameRevCommand
@@ -32,34 +33,27 @@ import org.eclipse.jgit.api.RemoveNoteCommand
 import org.eclipse.jgit.api.RenameBranchCommand
 import org.eclipse.jgit.api.ResetCommand
 import org.eclipse.jgit.api.RevertCommand
-import org.eclipse.jgit.api.SubmoduleSyncCommand
-import org.eclipse.jgit.api.SubmoduleUpdateCommand
-import org.eclipse.jgit.api.TagCommand
-import org.eclipse.jgit.api.errors.GitAPIException
 import org.eclipse.jgit.api.RmCommand
 import org.eclipse.jgit.api.ShowNoteCommand
 import org.eclipse.jgit.api.StashApplyCommand
 import org.eclipse.jgit.api.StashCreateCommand
 import org.eclipse.jgit.api.StashDropCommand
 import org.eclipse.jgit.api.StashListCommand
-import org.eclipse.jgit.api.AddCommand
-import org.eclipse.jgit.api.AddNoteCommand
-import org.eclipse.jgit.api.ApplyCommand
-import org.eclipse.jgit.api.ArchiveCommand
-import org.eclipse.jgit.api.BlameCommand
-import org.eclipse.jgit.api.CheckoutCommand
-import org.eclipse.jgit.api.CherryPickCommand
-import org.eclipse.jgit.api.CleanCommand
 import org.eclipse.jgit.api.StatusCommand
 import org.eclipse.jgit.api.SubmoduleAddCommand
 import org.eclipse.jgit.api.SubmoduleInitCommand
 import org.eclipse.jgit.api.SubmoduleStatusCommand
+import org.eclipse.jgit.api.SubmoduleSyncCommand
+import org.eclipse.jgit.api.SubmoduleUpdateCommand
+import org.eclipse.jgit.api.TagCommand
+import org.eclipse.jgit.api.errors.GitAPIException
+import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.InitializingBean
 
-import org.eclipse.jgit.lib.Repository
 /**
- *
  * @author james
  */
 class JGit implements InitializingBean {
@@ -72,7 +66,9 @@ class JGit implements InitializingBean {
     private PullCommand pull
     private PushCommand push
     private Repository repository
-    
+
+    protected Logger log = LoggerFactory.getLogger(getClass().name)
+
     void afterPropertiesSet() {
         // do you stuff here.
         if(rootFolder.exists()) {
@@ -97,7 +93,7 @@ class JGit implements InitializingBean {
             push.setCredentialsProvider(credentialsProvider)
             push.setRemote(remoteURL)
         } catch(GitAPIException e) {
-            e.printStackTrace()
+            log.error(e.message, e)
         }
     }
     /**
@@ -124,7 +120,7 @@ class JGit implements InitializingBean {
     }
     /**
      * Returns a command object to execute a {@code Commit} command
-     * with the author preset using the userInfo class methods 
+     * with the author preset using the userInfo class methods
      * 'resolveUsername' and 'resolveEmail'
      *
      * @see <a
@@ -565,4 +561,3 @@ class JGit implements InitializingBean {
         return repository
     }
 }
-

@@ -20,7 +20,7 @@ Adds a dynamic method for JGit. The closure includes the root folder of the repo
 
 ```
 withJGit() { rf ->
-  # do stuff on the jgit class using it's methods
+  # do stuff on the jgit class using its methods
 }
 ```
 
@@ -43,7 +43,7 @@ withJGit() { rf ->
 
 ###Installation
 
-Download the latest version of the plugin and refer to it in BuildConfig.groovy by it's path as:
+Download the latest version of the plugin and refer to it in BuildConfig.groovy by its path as:
 
 ```
 grails.plugin.location.'jgit' = "../jgit"

@@ -1,5 +1,7 @@
+/target
+/docs
+/web-app/WEB-INF
 *.log
-target/*
 plugin.xml
-target/*
-docs/*
+grails-jgit-*.zip
+grails-jgit-*.zip.sha1
