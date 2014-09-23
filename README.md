@@ -91,3 +91,49 @@ jgit.userInfoHandler =
 |<sub>gitRemotePassword</sub>	                | <sub>`mygitpassword`</sub>	                 | <sub>the remote user password</sub>                                                                                                                                      |
 |<sub>injectInto</sub>	                | <sub>`['Controller', 'Service','Domain']`</sub>	                 | <sub>The class types to be injected </sub>                                                                                                                                      |
 
+###Using a Custom User Info Handler
+
+There are many reasons why you might want to have a custom `UserInfoHandler` rather than hardcoding exclusively inside your config. 
+You can extend the `UserInfoHandler` as a Groovy class and update the config option `jgit.userInfoHandler` to reference that new class.
+
+However, perhaps you are using Spring Security and you can derive username and email attributes from there. Maybe something else. 
+Regardless, simply define your own methods similar to those `org.grails.plugins.jgit.UserInfoHandler` and override the `jgitUserInfo` bean in `Resources.groovy`.
+
+For example with using Spring Security, you may want to create a service that containing the `resolveEmail()` and `resolveUsername()` methods something like this:
+
+```
+class SpringSecurityUserInfoHandlerService {
+    def springSecurityService
+    def grailsApplication
+    /**
+     * Resolves the Git email address and uses a fallback if necessary
+     *
+     * @param    username     The username used to resolve an email address
+     * @return                The email address associated or fallback email address if not found
+     */
+    def resolveEmail() {
+        def username = resolveUsername()
+        return grailsApplication.config.fallbackMap[username] ?: grailsApplication.config.fallbackEmailDefault
+    }
+
+    /**
+     * Resolves the Git username from Spring Security
+     *
+     * @return                The username provided by Spring Security
+     */
+    def resolveUsername() {
+        def principal = springSecurityService.principal
+        return principal.username
+    }
+}
+```
+
+You can define a bean for using it in `Resources.groovy` like:
+
+```
+beans = {
+    jgitUserInfo { bean ->
+        bean.parent = ref('springSecurityUserInfoHandlerService')
+    } 
+}
+```
