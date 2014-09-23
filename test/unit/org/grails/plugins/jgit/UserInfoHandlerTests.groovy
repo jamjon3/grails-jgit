@@ -6,20 +6,27 @@ import grails.test.mixin.support.GrailsUnitTestMixin
 @TestMixin(GrailsUnitTestMixin)
 class UserInfoHandlerTests {
 
-    void setUp() {
-        UserInfoHandler.metaClass.resolveEmail {->
-            return 'sombody@mycompany.com'
-        }
-        UserInfoHandler.metaClass.resolveUsername {->
-            return 'sombody'
-        }
-    }
-
     void testResolveEmail() {
-        assert new UserInfoHandler().resolveEmail() == 'sombody@mycompany.com'
+        def userInfoHandler = new UserInfoHandler()
+        userInfoHandler.setConfig([
+            fallbackEmailDefault: 'sombody@mycompany.com',
+            fallbackUsername: 'sombody',
+            fallbackMap: [:]
+        ])
+        assert userInfoHandler.resolveEmail() == 'sombody@mycompany.com'
+        userInfoHandler.setConfig([
+            fallbackEmailDefault: 'sombody@mycompany.com',
+            fallbackUsername: 'sombody',
+            fallbackMap: [sombody: 'sombody@anothercompany.com']
+        ])
+        assert userInfoHandler.resolveEmail() == 'sombody@anothercompany.com'
     }
 
     void testResolveUsername() {
-        assert new UserInfoHandler().resolveUsername() == 'sombody'
+        def userInfoHandler = new UserInfoHandler()
+        userInfoHandler.setConfig([
+            fallbackUsername: 'sombody'
+        ])
+        assert userInfoHandler.resolveUsername() == 'sombody'
     }
 }
