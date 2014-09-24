@@ -2,7 +2,7 @@ import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider
 import org.grails.plugins.jgit.JGit
 
 class JgitGrailsPlugin {
-    def version = "1.0.0"
+    def version = "1.0.0a"
     def grailsVersion = "2.2 > *"
     def title = "JGit Plugin"
     def author = "James Jones"
