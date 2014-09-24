@@ -18,9 +18,11 @@ class JgitGrailsPlugin {
     def doWithSpring = {
         def jgitConfig = application.config?.jgit
         if (!jgitConfig.userInfoHandler) return
-
-        jgitUserInfo(jgitConfig.userInfoHandler) {
-            conf = application.config.jgit
+        
+        // Load the class name string into an actual class
+        def userInfoHandlerClass = getClass().classLoader.loadClass(jgitConfig.userInfoHandler)
+        jgitUserInfo(userInfoHandlerClass) {
+            config = application.config.jgit
         }
 
         credentialsProvider(UsernamePasswordCredentialsProvider, jgitConfig.gitRemotelogin, jgitConfig.gitRemotePassword)
