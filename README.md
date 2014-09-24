@@ -43,10 +43,11 @@ withJGit() { rf ->
 
 ###Installation
 
-Download the latest version of the plugin and refer to it in BuildConfig.groovy by its path as:
-
+Add to your BuildConfig.groovy:
 ```
-grails.plugin.location.'jgit' = "../jgit"
+plugins {
+   compile ':jgit:1.0.0'
+}
 ```
 
 ##Configuration
