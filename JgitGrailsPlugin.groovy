@@ -3,7 +3,7 @@ import org.grails.plugins.jgit.JGit
 import org.grails.plugins.jgit.FlexibleSshSessionFactory
 
 class JgitGrailsPlugin {
-    def version = "1.0.0a"
+    def version = "1.0.1"
     def grailsVersion = "2.2 > *"
     def title = "JGit Plugin"
     def author = "James Jones"
