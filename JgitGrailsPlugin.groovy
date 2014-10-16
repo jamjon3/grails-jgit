@@ -1,5 +1,6 @@
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider
 import org.grails.plugins.jgit.JGit
+import org.grails.plugins.jgit.FlexibleSshSessionFactory
 
 class JgitGrailsPlugin {
     def version = "1.0.0a"
@@ -19,20 +20,31 @@ class JgitGrailsPlugin {
         def jgitConfig = application.config?.jgit
         if (!jgitConfig.userInfoHandler) return
         
-        // Load the class name string into an actual class
+        // Load the user info handler class name string into an actual class
         def userInfoHandlerClass = getClass().classLoader.loadClass(jgitConfig.userInfoHandler)
         jgitUserInfo(userInfoHandlerClass) {
             config = application.config.jgit
         }
 
-        credentialsProvider(UsernamePasswordCredentialsProvider, jgitConfig.gitRemotelogin, jgitConfig.gitRemotePassword)
-
-        jGit(JGit) {
+        if(jgitConfig.http) {
+            credentialsProvider(UsernamePasswordCredentialsProvider, jgitConfig.http.gitRemotelogin, jgitConfig.http.gitRemotePassword)
+        }
+        if(jgitConfig.ssh) {
+            sshSessionFactory(FlexibleSshSessionFactory) {
+                config = application.config.jgit.ssh
+            }            
+        }
+        jGit(JGit) { bean ->
             rootFolder = application.parentContext.getResource("git").file
             remoteURL  = jgitConfig.gitRemoteURL
             branch = jgitConfig.branch
             userInfo = ref('jgitUserInfo')
-            credentialsProvider = ref('credentialsProvider')
+            if(jgitConfig.http) {
+                credentialsProvider = ref('credentialsProvider')
+            }
+            if(jgitConfig.ssh) {
+                sshSessionFactory = ref('sshSessionFactory')
+            }
         }
     }
 
