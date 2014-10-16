@@ -90,7 +90,7 @@ jgit.userInfoHandler =
 |<sub>gitRemoteURL</sub>	                | <sub>`https://github.com/someuser/SomeApp.git`</sub>	                 | <sub>The remote git repo for sync</sub>                                                                                                                                      |
 |<sub>http.gitRemotelogin</sub>	| <sub>`jdoe`</sub>	| <sub>the remote user id</sub> |
 |<sub>http.gitRemotePassword</sub>	                | <sub>`mygitpassword`</sub>	                 | <sub>the remote user password</sub>                                                                                                                                      |
-|<sub>ssh.sshPassphrase</sub>	| <sub>`some passphrase`</sub>	| <sub>the associated with your private key</sub> |
+|<sub>ssh.sshPassphrase</sub>	| <sub>`some passphrase`</sub>	| <sub>the passphrase associated with your private key</sub> |
 |<sub>ssh.sshPrivKey</sub>	| <sub>Text of the .ssh/id_rsa file</sub>	| <sub>the full text of your private key</sub> |
 |<sub>ssh.sshPubKey</sub>	| <sub>Text of the .ssh/id_rsa.pub file</sub>	| <sub>the full text of your public key</sub> |
 |<sub>ssh.sshPrivKeyPath</sub>	| <sub>`/home/jdoe/.ssh/id_rsa`</sub>	| <sub>the path of your private key</sub> |
@@ -100,7 +100,7 @@ jgit.userInfoHandler =
 
 ###Using a remote ssh repository
 
-By default, the plugin connects over http with a username and password. However, when you need to connect to a ssh style URL (ex: git@somehost.com:MyProject.git), you'll
+By default, the plugin connects over http with a username and password. However, when you need to connect to a ssh style URL (ex: `git@somehost.com:MyProject.git`), you'll
 need to specify ssh config options for key authentication. If the remote git host has your public key as an authorized key, you should be able to simply specify
 your ssh passphrase and private key in your config file something like:
 
@@ -115,7 +115,7 @@ DEK-Info: AES-128-CBC,
 ```
 
 Of course, you can override the `sshSessionFactory` with your own ssh session factory if you require special handling
-not provided in the `FlexibleSshSessionFactory` class
+not provided in the `FlexibleSshSessionFactory` class.
 
 ###Using a Custom User Info Handler
 
