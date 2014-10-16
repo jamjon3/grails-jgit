@@ -46,7 +46,7 @@ withJGit() { rf ->
 Add to your BuildConfig.groovy:
 ```
 plugins {
-   compile ':jgit:1.0.0'
+   compile ':jgit:1.0.1'
 }
 ```
 
@@ -67,8 +67,8 @@ jgit.fallbackEmailDefault = 'jdoe@foo.net'
 jgit.fallbackUsername = 'jdoe'
 jgit.branch = 'master'
 jgit.gitRemoteURL = 'https://github.com/someuser/SomeApp.git'
-jgit.gitRemotelogin = 'jdoe'
-jgit.gitRemotePassword = 'mygitpassword'
+jgit.http.gitRemotelogin = 'jdoe'
+jgit.http.gitRemotePassword = 'mygitpassword'
 jgit.injectInto = ['Controller', 'Service','Domain']
 ```
 
@@ -88,9 +88,35 @@ jgit.userInfoHandler =
 |<sub>fallbackUsername</sub>	        | <sub>`jdoe`</sub>  | <sub>A default username when resolution fails</sub>                                                                                                                                                                 |
 |<sub>branch</sub>	                | <sub>`master`</sub>	                 | <sub>The "branch" being used to sync remotely</sub>                                                                                                                                      |
 |<sub>gitRemoteURL</sub>	                | <sub>`https://github.com/someuser/SomeApp.git`</sub>	                 | <sub>The remote git repo for sync</sub>                                                                                                                                      |
-|<sub>gitRemotelogin</sub>	| <sub>`jdoe`</sub>	| <sub>the remote user id</sub> |
-|<sub>gitRemotePassword</sub>	                | <sub>`mygitpassword`</sub>	                 | <sub>the remote user password</sub>                                                                                                                                      |
+|<sub>http.gitRemotelogin</sub>	| <sub>`jdoe`</sub>	| <sub>the remote user id</sub> |
+|<sub>http.gitRemotePassword</sub>	                | <sub>`mygitpassword`</sub>	                 | <sub>the remote user password</sub>                                                                                                                                      |
+|<sub>ssh.sshPassphrase</sub>	| <sub>`some passphrase`</sub>	| <sub>the passphrase associated with your private key</sub> |
+|<sub>ssh.sshPrivKey</sub>	| <sub>Text of the .ssh/id_rsa file</sub>	| <sub>the full text of your private key</sub> |
+|<sub>ssh.sshPubKey</sub>	| <sub>Text of the .ssh/id_rsa.pub file</sub>	| <sub>the full text of your public key</sub> |
+|<sub>ssh.sshPrivKeyPath</sub>	| <sub>`/home/jdoe/.ssh/id_rsa`</sub>	| <sub>the path of your private key</sub> |
+|<sub>ssh.sshPubKeyPath</sub>	| <sub>`/home/jdoe/.ssh/id_rsa.pub`</sub>	| <sub>the path of your public key</sub> |
+|<sub>ssh.strictHostKeyChecking</sub>	                | <sub>`yes`</sub>	                 | <sub>yes/no option to toggle strict host key checking on and off</sub>                                                                                                                                      |
 |<sub>injectInto</sub>	                | <sub>`['Controller', 'Service','Domain']`</sub>	                 | <sub>The class types to be injected </sub>                                                                                                                                      |
+
+###Using a remote ssh repository
+
+By default, the plugin connects over http with a username and password. However, when you need to connect to a ssh style URL (ex: `git@somehost.com:MyProject.git`), you'll
+need to specify ssh config options for key authentication. If the remote git host has your public key as an authorized key, you should be able to simply specify
+your ssh passphrase and private key in your config file something like:
+
+```
+jgit.ssh.sshPassphrase = 'MySecretPassphrase'
+jgit.ssh.sshPrivKey = """
+-----BEGIN RSA PRIVATE KEY-----
+Proc-Type: 4,ENCRYPTED
+DEK-Info: AES-128-CBC,
+....all the key data here....
+-----END RSA PRIVATE KEY-----
+"""
+```
+
+Of course, you can override the `sshSessionFactory` with your own ssh session factory if you require special handling
+not provided in the `FlexibleSshSessionFactory` class.
 
 ###Using a Custom User Info Handler
 

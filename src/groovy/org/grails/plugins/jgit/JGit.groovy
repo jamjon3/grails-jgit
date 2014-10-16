@@ -49,6 +49,7 @@ import org.eclipse.jgit.api.TagCommand
 import org.eclipse.jgit.api.errors.GitAPIException
 import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
+import org.eclipse.jgit.transport.SshSessionFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.InitializingBean
@@ -62,6 +63,7 @@ class JGit implements InitializingBean {
     def credentialsProvider
     def remoteURL
     def branch
+    def sshSessionFactory
     private Git git
     private PullCommand pull
     private PushCommand push
@@ -74,6 +76,7 @@ class JGit implements InitializingBean {
         if(rootFolder.exists()) {
             rootFolder.deleteDir()
         }
+        if(sshSessionFactory) SshSessionFactory.setInstance(sshSessionFactory)
         FileRepositoryBuilder builder = new FileRepositoryBuilder()
         repository = builder.setGitDir(rootFolder)
         .readEnvironment().findGitDir().setup().build()
@@ -84,13 +87,13 @@ class JGit implements InitializingBean {
         // Specify the remote uri. Ex: git@192.168.2.43:test.git OR https://github.com/someuser/SomeProject.git
         clone.setDirectory(rootFolder).setURI(remoteURL)
         // Add the provided credentialsProvider
-        clone.setCredentialsProvider(credentialsProvider)
+        if(credentialsProvider) clone.setCredentialsProvider(credentialsProvider)
         try {
             git = clone.call()
             pull = git.pull()
-            pull.setCredentialsProvider(credentialsProvider)
+            if(credentialsProvider) pull.setCredentialsProvider(credentialsProvider)
             push = git.push()
-            push.setCredentialsProvider(credentialsProvider)
+            if(credentialsProvider) push.setCredentialsProvider(credentialsProvider)
             push.setRemote(remoteURL)
         } catch(GitAPIException e) {
             log.error(e.message, e)
