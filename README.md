@@ -112,6 +112,7 @@ Proc-Type: 4,ENCRYPTED
 DEK-Info: AES-128-CBC,
 ....all the key data here....
 -----END RSA PRIVATE KEY-----
+"""
 ```
 
 Of course, you can override the `sshSessionFactory` with your own ssh session factory if you require special handling
