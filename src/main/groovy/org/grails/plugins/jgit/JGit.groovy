@@ -73,13 +73,14 @@ class JGit implements InitializingBean {
 
     void afterPropertiesSet() {
         // do you stuff here.
-        if(rootFolder.exists()) {
+        if (rootFolder.exists()) {
             rootFolder.deleteDir()
         }
-        if(sshSessionFactory) SshSessionFactory.setInstance(sshSessionFactory)
+        if (sshSessionFactory) {
+            SshSessionFactory.setInstance(sshSessionFactory)
+        }
         FileRepositoryBuilder builder = new FileRepositoryBuilder()
-        repository = builder.setGitDir(rootFolder)
-        .readEnvironment().findGitDir().setup().build()
+        repository = builder.setGitDir(rootFolder).readEnvironment().findGitDir().setup().build()
         // Setup the Clone
         CloneCommand clone = Git.cloneRepository()
         // Setup the branch on the clone
@@ -87,15 +88,22 @@ class JGit implements InitializingBean {
         // Specify the remote uri. Ex: git@192.168.2.43:test.git OR https://github.com/someuser/SomeProject.git
         clone.setDirectory(rootFolder).setURI(remoteURL)
         // Add the provided credentialsProvider
-        if(credentialsProvider) clone.setCredentialsProvider(credentialsProvider)
+        if (credentialsProvider) {
+            clone.setCredentialsProvider(credentialsProvider)
+        }
         try {
             git = clone.call()
             pull = git.pull()
-            if(credentialsProvider) pull.setCredentialsProvider(credentialsProvider)
+            if (credentialsProvider) {
+                pull.setCredentialsProvider(credentialsProvider)
+            }
             push = git.push()
-            if(credentialsProvider) push.setCredentialsProvider(credentialsProvider)
+            if (credentialsProvider) {
+                push.setCredentialsProvider(credentialsProvider)
+            }
             push.setRemote(remoteURL)
-        } catch(GitAPIException e) {
+        }
+        catch(GitAPIException e) {
             log.error(e.message, e)
         }
     }
