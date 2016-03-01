@@ -70,40 +70,40 @@ class JgitGrailsPlugin extends Plugin {
         }
     }
 
-    void doWithDynamicMethods() {
-        processArtifacts(grailsApplication)
-    }
-
-    void onChange(Map<String, Object> event) {
-        processArtifacts(grailsApplication)
-    }
-
-    void onConfigChange(Map<String, Object> event) {
-        processArtifacts(grailsApplication)
-    }
-
-    private void processArtifacts(application) {
-        def config = grailsApplication.config
-        if (!grailsApplication.mainContext.beanDefinitionNames.find { it == 'jGit' }) return
-
-        def jgit = grailsApplication.mainContext.getBean('jGit')
-        def types = config.jgit?.injectInto ?: ["Controller", "Service", "Domain"]
-        if (!jgit) return
-
-        types.each { type ->
-            grailsApplication.getArtefacts(type).each { klass -> addDynamicMethods(klass, jgit) }
-        }
-    }
-
-    private void addDynamicMethods(klass, jgit) {
-        klass.metaClass.withJGit = withJGit.curry(jgit)
-    }
-
-    private withJGit = { jgit, Closure closure ->
-        if (!closure) return
-
-        closure.delegate = jgit
-        closure.resolveStrategy = Closure.DELEGATE_FIRST
-        closure(jgit.rootFolder)
-    }
+//    void doWithDynamicMethods() {
+//        processArtifacts(grailsApplication)
+//    }
+//
+//    void onChange(Map<String, Object> event) {
+//        processArtifacts(grailsApplication)
+//    }
+//
+//    void onConfigChange(Map<String, Object> event) {
+//        processArtifacts(grailsApplication)
+//    }
+//
+//    private void processArtifacts(application) {
+//        def config = grailsApplication.config
+//        if (!grailsApplication.mainContext.beanDefinitionNames.find { it == 'jGit' }) return
+//
+//        def jgit = grailsApplication.mainContext.getBean('jGit')
+//        def types = config.jgit?.injectInto ?: ["Controller", "Service", "Domain"]
+//        if (!jgit) return
+//
+//        types.each { type ->
+//            grailsApplication.getArtefacts(type).each { klass -> addDynamicMethods(klass, jgit) }
+//        }
+//    }
+//
+//    private void addDynamicMethods(klass, jgit) {
+//        klass.metaClass.withJGit = withJGit.curry(jgit)
+//    }
+//
+//    private withJGit = { jgit, Closure closure ->
+//        if (!closure) return
+//
+//        closure.delegate = jgit
+//        closure.resolveStrategy = Closure.DELEGATE_FIRST
+//        closure(jgit.rootFolder)
+//    }
 }
