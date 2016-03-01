@@ -8,3 +8,4 @@ grails-jgit-*.zip.sha1
 /.idea
 /build
 /.gradle
+/gradle/wrapper
