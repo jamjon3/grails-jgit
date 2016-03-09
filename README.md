@@ -3,14 +3,14 @@ grails-jgit
 
 Grails JGit plugin creates a wrapper around the JGit library. 
 
-##Table of Contents
+## Table of Contents
 
 1. [Introduction](#introduction)
 2. [Usage](#usage)
 3. [Installation](#installation)
 4. [Configuration](#configuration)
 
-##Introduction
+## Introduction
 
 The JGit library is very useful for handling Git repositories in Java applications. This implementation intends on making it more "groovy".
 
@@ -18,7 +18,7 @@ The JGit library is very useful for handling Git repositories in Java applicatio
 
 Adds a dynamic method for JGit. The closure includes the root folder of the repository (aka: 'rf')
 
-```
+```Groovy
 withJGit() { rf ->
   # do stuff on the jgit class using its methods
 }
@@ -26,7 +26,7 @@ withJGit() { rf ->
 
 Example:
 
-```
+```Groovy
 withJGit() { rf ->
     pull().call()
     def f = new File(rf,"test.txt")
@@ -41,16 +41,16 @@ withJGit() { rf ->
 }
 ```
 
-###Installation
+### Installation
 
 Add to your BuildConfig.groovy:
-```
+```Gradle
 plugins {
-   compile ':jgit:1.0.1'
+   compile ':jgit:2.0.0.BUILD-SNAPSHOT'
 }
 ```
 
-##Configuration
+## Configuration
 
 After you have installed the plugin, run this command to add the necessary configuration options:
 
@@ -58,9 +58,9 @@ After you have installed the plugin, run this command to add the necessary confi
 grails jgit-config
 ```
 
-The following lines will be added to your Config.groovy:
+The following lines will be added to your `application.groovy` (or `application.yml` if no `application.groovy` exists):
 
-```
+```Groovy
 jgit.userInfoHandler = 'org.grails.plugins.jgit.UserInfoHandler'
 jgit.fallbackMap = [:]
 jgit.fallbackEmailDefault = 'jdoe@foo.net'
@@ -72,13 +72,13 @@ jgit.http.gitRemotePassword = 'mygitpassword'
 jgit.injectInto = ['Controller', 'Service','Domain']
 ```
 
-> **Note:** All of these property overrides must be specified in `grails-app/conf/Config.groovy` using the `jgit` prefix, for example:
+> **Note:** All of these property overrides must be specified in `grails-app/conf/application.groovy` using the `jgit` prefix, for example:
 > 
-> ```
-jgit.userInfoHandler =
-     'org.grails.plugins.jgit.UserInfoHandler'
-``` 
-> 
+>```
+>jgit.userInfoHandler =
+>     'org.grails.plugins.jgit.UserInfoHandler'
+>```
+
 
 | Name	                        | Default	                 | Meaning                                                                                                                                                                                               |
 | ----------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -98,7 +98,7 @@ jgit.userInfoHandler =
 |<sub>ssh.strictHostKeyChecking</sub>	                | <sub>`yes`</sub>	                 | <sub>yes/no option to toggle strict host key checking on and off</sub>                                                                                                                                      |
 |<sub>injectInto</sub>	                | <sub>`['Controller', 'Service','Domain']`</sub>	                 | <sub>The class types to be injected </sub>                                                                                                                                      |
 
-###Using a remote ssh repository
+### Using a remote ssh repository
 
 By default, the plugin connects over http with a username and password. However, when you need to connect to a ssh style URL (ex: `git@somehost.com:MyProject.git`), you'll
 need to specify ssh config options for key authentication. If the remote git host has your public key as an authorized key, you should be able to simply specify
@@ -118,7 +118,7 @@ DEK-Info: AES-128-CBC,
 Of course, you can override the `sshSessionFactory` with your own ssh session factory if you require special handling
 not provided in the `FlexibleSshSessionFactory` class.
 
-###Using a Custom User Info Handler
+### Using a Custom User Info Handler
 
 There are many reasons why you might want to have a custom `UserInfoHandler` rather than hardcoding exclusively inside your config. 
 You can extend the `UserInfoHandler` as a Groovy class and update the config option `jgit.userInfoHandler` to reference that new class.
@@ -128,7 +128,7 @@ Regardless, simply define your own methods similar to those in `org.grails.plugi
 
 For example with using Spring Security, you may want to just create a service that contains the `resolveEmail()` and `resolveUsername()` methods something like this:
 
-```
+```Groovy
 class SpringSecurityUserInfoHandlerService {
     def springSecurityService
     def grailsApplication
@@ -155,9 +155,9 @@ class SpringSecurityUserInfoHandlerService {
 }
 ```
 
-You can define a bean for using it in `Resources.groovy` like:
+You can define a bean for using it in `resources.groovy` like:
 
-```
+```Groovy
 beans = {
     jgitUserInfo { bean ->
         bean.parent = ref('springSecurityUserInfoHandlerService')
