@@ -1,7 +1,6 @@
 buildscript {
     ext {
         grailsVersion = project.grailsVersion
-        appName = project.'app.name'
     }
     repositories {
         mavenLocal()
