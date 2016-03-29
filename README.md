@@ -14,13 +14,13 @@ Grails JGit plugin creates a wrapper around the JGit library.
 
 The JGit library is very useful for handling Git repositories in Java applications. This implementation intends on making it more "groovy".
 
-##Usage
+## Usage
 
 Adds a dynamic method for JGit. The closure includes the root folder of the repository (aka: 'rf')
 
 ```Groovy
 withJGit() { rf ->
-  # do stuff on the jgit class using its methods
+  // do stuff on the jgit class using its methods
 }
 ```
 
@@ -124,7 +124,7 @@ There are many reasons why you might want to have a custom `UserInfoHandler` rat
 You can extend the `UserInfoHandler` as a Groovy class and update the config option `jgit.userInfoHandler` to reference that new class.
 
 However, perhaps you are using Spring Security and you can derive username and email attributes from there. Maybe something else. 
-Regardless, simply define your own methods similar to those in `org.grails.plugins.jgit.UserInfoHandler` and override the `jgitUserInfo` bean in `Resources.groovy`.
+Regardless, simply define your own methods similar to those in `org.grails.plugins.jgit.UserInfoHandler` and override the `jgitUserInfo` bean in `resources.groovy`.
 
 For example with using Spring Security, you may want to just create a service that contains the `resolveEmail()` and `resolveUsername()` methods something like this:
 
