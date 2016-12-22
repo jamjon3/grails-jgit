@@ -5,3 +5,7 @@
 plugin.xml
 grails-jgit-*.zip
 grails-jgit-*.zip.sha1
+/.idea
+/build
+/.gradle
+/gradle/wrapper
