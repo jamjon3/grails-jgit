@@ -2,9 +2,12 @@
 - hosts: all
   tasks:
     - name: Build Grails jgit
-      shell: "grails package-plugin"
+      shell: "{{ item }}"
       args:
         chdir: "../"
+      with_items:
+        - "grails refresh-dependencies"
+        - "grails package-plugin"
       tags:
         - build
     - name: Find the plugin
