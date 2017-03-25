@@ -1,0 +1,23 @@
+---
+- hosts: all
+  tasks:
+    - name: Build Grails jgit
+      shell: "grails package-plugin"
+      args:
+        chdir: "../"
+      tags:
+        - build
+    - name: Find the plugin
+      find:
+        paths: "../"
+        patterns: "grails-jgit-*.zip"
+      register: plugins
+      tags:
+        - build 
+    - name: Add Grails jgit to local repo
+      shell: "grails install-plugin {{ item.path | basename }}"
+      args:
+        chdir: "../"
+      with_items: "{{ plugins.files }}"  
+      tags:
+        - build
